@@ -13,11 +13,18 @@ import shutil
 from PIL import Image
 from svglib.svglib import svg2rlg
 from reportlab.graphics import renderPM
+from web3 import Web3
+from web3.providers import HTTPProvider
+from ens import ENS
 
+infura_project_id = os.environ.get('INFURA_PROJECT_ID')
 
 def parse_guardians_csv(db: _orm.Session):
 
     with open('Guardians.csv', mode='r') as csv_file:
+
+        w3 = Web3(HTTPProvider(f"https://mainnet.infura.io/v3/{infura_project_id}"))
+        ns = ENS.fromWeb3(w3)
 
         csv_reader = csv.DictReader(csv_file)
         line_count = 0
@@ -42,8 +49,7 @@ def parse_guardians_csv(db: _orm.Session):
 
             # resolve ens
             if "." in guardian_address:
-                continue
-                #TODO resolve ens address
+                guardian_address = ns.address(f"{guardian_address}")
             else:
                 guardian_ens = ""
 
@@ -130,5 +136,5 @@ db.query(_models.GuardianModel).delete()
 db.commit()
 
 
-shutil.rmtree("images")
+#shutil.rmtree("images")
 parse_guardians_csv(db)
