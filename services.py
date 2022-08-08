@@ -16,8 +16,12 @@ def get_db():
         db.close()
 
 
-async def get_guardian_by_address(address: str, db: _orm.Session):
-    return db.query(_models.GuardianModel).filter(_models.GuardianModel.address == address).first()
+async def get_guardian_by_address(url: str, address: str, db: _orm.Session):
+    guardian = db.query(_models.GuardianModel).filter(_models.GuardianModel.address == address).first()
+    if guardian:
+        guardian = map_guardian_with_url(url)(guardian)
+    return guardian
+
 
 
 async def get_guardians(url, db: _orm.Session):

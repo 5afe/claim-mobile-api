@@ -23,12 +23,16 @@ async def guardians(
 
 @app.get("/api/v1/guardians/{address}", response_model=_schemas.Guardian)
 async def guardian(
+        request: Request,
         address,
         db: _orm.Session = _fastapi.Depends(_services.get_db)
 ):
-    guardian = await _services.get_guardian_by_address(address=address, db=db)
-    if guardian:
+    result = await _services.get_guardian_by_address(request.url._url, address=address, db=db)
+
+    if not result:
         raise _fastapi.HTTPException(status_code=404, detail="guardian not found")
+
+    return result
 
 
 class ImageParams:
