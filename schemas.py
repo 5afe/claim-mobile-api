@@ -4,6 +4,7 @@ import datetime as _datetime
 class Guardian(_pydantic.BaseModel):
     address: str
     name: str
+    image_url: str
     reason: str
     contribution: str
     start_date: _datetime.datetime

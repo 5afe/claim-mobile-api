@@ -7,14 +7,17 @@ import schemas as _schemas
 from typing import List
 
 from fastapi.responses import FileResponse
+from fastapi import Request
 
 app = _fastapi.FastAPI()
 
 @app.get("/api/v1/guardians", response_model=List[_schemas.Guardian])
 async def guardians(
-        db: _orm.Session = _fastapi.Depends(_services.get_db)
+        request: Request,
+        db: _orm.Session = _fastapi.Depends(_services.get_db),
+
 ):
-    return await _services.get_guardians(db=db)
+    return await _services.get_guardians(request.url._url, db=db)
 
 
 @app.get("/api/v1/guardians/{address}", response_model=_schemas.Guardian)
@@ -28,8 +31,8 @@ async def guardian(
 
 
 @app.get("/api/v1/guardians/{address}/image", response_class=FileResponse)
-async def guardian_image():
-    return FileResponse(f"images/0xaa_1x.jpg")
+async def guardian_image(address, size="1x"):
+    return FileResponse(f"images/{address}_{size}.jpg")
 
 
 @app.get("/api/v1/{address}/delegate", response_model=str)

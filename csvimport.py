@@ -31,10 +31,25 @@ def parse_guardians_csv(db: _orm.Session):
                 print(f'Column names are {", ".join(row)}')
                 line_count += 1
 
-            image_url = row["Please provide a profile picture / project logo* *in* SVG *or* PNG format*"]
-            if image_url:
-                file = image_url.split("/")[-1]
-                r = requests.get(image_url, stream=True)
+            guardian_name = row["Full name?"]
+            guardian_address = row["What's your delegate address / ENS name? "]
+            guardian_ens = row["What's your delegate address / ENS name? "]
+            guardian_image_url = row["Please provide a profile picture / project logo* *in* SVG *or* PNG format*"]
+            guardian_reason = row["What are your reasons for wanting to be a delegate?"]
+            guardian_contribution = row["As a founding Guardian, what was your previous contribution?"]
+            guardian_start_date = datetime.datetime.now(),
+            guardian_submit_date = datetime.datetime.now()
+
+            # resolve ens
+            if "." in guardian_address:
+                continue
+                #TODO resolve ens address
+            else:
+                guardian_ens = ""
+
+            if guardian_image_url:
+                file = guardian_image_url.split("/")[-1]
+                r = requests.get(guardian_image_url, stream=True)
 
                 if r.status_code == 200:
                     # Set decode_content value to True, otherwise the downloaded image file's size will be zero.
@@ -49,20 +64,20 @@ def parse_guardians_csv(db: _orm.Session):
 
                     if extension == ".svg":
                         svg_to_png(file)
-                        to_jpgs(f"{filename}.png")
+                        to_jpgs(f"{filename}.png", guardian_address)
                     else:
-                        to_jpgs(file)
+                        to_jpgs(file, guardian_address)
 
                 else:
                     print('Image Couldn\'t be retreived')
 
             guardian_obj = _models.GuardianModel(
-                name=row["Full name?"],
-                address=row["What's your delegate address / ENS name? "],
-                ens=row["What's your delegate address / ENS name? "],
-                image_url=image_url,
-                reason=row["What are your reasons for wanting to be a delegate?"],
-                contribution=row["As a founding Guardian, what was your previous contribution?"],
+                name=guardian_name,
+                address=guardian_address,
+                ens=guardian_ens,
+                image_url=guardian_image_url,
+                reason=guardian_reason,
+                contribution=guardian_contribution,
                 start_date=datetime.datetime.now(),
                 submit_date=datetime.datetime.now()
             )
@@ -85,9 +100,7 @@ def svg_to_png(file):
     renderPM.drawToFile(drawing, f"images_/{filename}.png", fmt='PNG')
 
 
-def to_jpgs(file):
-
-    filename = os.path.splitext(file)[0]
+def to_jpgs(file, address):
 
     im = Image.open(os.path.join("images_", file))
 
@@ -95,15 +108,15 @@ def to_jpgs(file):
 
     # 3x
     rgb_im.thumbnail((384, 384))
-    rgb_im.save(os.path.join("images", f"{filename}_3x.jpg"))
+    rgb_im.save(os.path.join("images", f"{address}_3x.jpg"))
 
     # 2x
     rgb_im.thumbnail((256, 256))
-    rgb_im.save(os.path.join("images", f"{filename}_2x.jpg"))
+    rgb_im.save(os.path.join("images", f"{address}_2x.jpg"))
 
     # 1x
     rgb_im.thumbnail((128, 128))
-    rgb_im.save(os.path.join("images", f"{filename}_1x.jpg"))
+    rgb_im.save(os.path.join("images", f"{address}_1x.jpg"))
 
 
 async def create_guardian(guardian: _models.GuardianModel):
