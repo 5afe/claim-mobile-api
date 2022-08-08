@@ -36,7 +36,3 @@ def map_guardian_with_url(url):
         dto.image_url = f"{url}/{guardian.address}/image"
         return dto
     return map_guardian
-
-
-create_db()
-

@@ -138,12 +138,3 @@ async def create_guardian(guardian: _models.GuardianModel):
     guardian_schema = _schemas.Guardian.from_orm(guardian)
     guardian_dict = guardian_schema.dict()
     del guardian_dict["created_at"]
-
-
-db = next(_services.get_db())
-db.query(_models.GuardianModel).delete()
-db.commit()
-
-
-#shutil.rmtree("guardian_images")
-parse_guardians_csv(db)
