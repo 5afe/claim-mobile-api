@@ -34,14 +34,14 @@ async def guardian(
 class ImageParams:
     def __init__(
         self,
-        size: str = Query(..., description="Image size")
+        size: str = Query("1x", description="Image size [ 1x, 2x, 3x ]")
     ):
         self.size = size
 
 
 @app.get("/api/v1/guardians/{address}/image", response_class=FileResponse)
-async def guardian_image(address, size="1x", params: ImageParams = _fastapi.Depends()):
-    return FileResponse(f"images/{address}_{size}.jpg")
+async def guardian_image(address, params: ImageParams = _fastapi.Depends()):
+    return FileResponse(f"images/{address}_{params.size}.jpg")
 
 
 @app.get("/api/v1/{address}/delegate", response_model=str)
