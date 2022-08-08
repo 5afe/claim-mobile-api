@@ -45,8 +45,12 @@ def parse_guardians_csv(db: _orm.Session):
             guardian_image_url = row["Please provide a profile picture / project logo* *in* SVG *or* PNG format*"]
             guardian_reason = row["What are your reasons for wanting to be a delegate?"]
             guardian_contribution = row["As a founding Guardian, what was your previous contribution?"]
-            guardian_start_date = datetime.datetime.now(),
-            guardian_submit_date = datetime.datetime.now()
+
+            start_date = datetime.datetime.strptime(row["Start Date (UTC)"], "%Y-%m-%d %H:%M:%S")
+            guardian_start_date = start_date
+
+            submit_date = datetime.datetime.strptime(row["Submit Date (UTC)"], "%Y-%m-%d %H:%M:%S")
+            guardian_submit_date = submit_date
 
             # resolve ens
             if "." in guardian_address:
@@ -89,14 +93,14 @@ def parse_guardians_csv(db: _orm.Session):
                 image_url=guardian_image_url,
                 reason=guardian_reason,
                 contribution=guardian_contribution,
-                start_date=datetime.datetime.now(),
-                submit_date=datetime.datetime.now()
+                start_date=guardian_start_date,
+                submit_date=guardian_submit_date
             )
             db.add(guardian_obj)
             db.commit()
             db.refresh(guardian_obj)
 
-            print(f'\t{row["Full name?"]}')
+            print(f'\t{guardian_name}')
             line_count += 1
 
         print(f'Processed {line_count} lines.')
