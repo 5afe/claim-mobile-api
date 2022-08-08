@@ -1,4 +1,6 @@
 import fastapi as _fastapi
+from fastapi.responses import FileResponse
+from fastapi import Request, Query
 import fastapi.security as _security
 import sqlalchemy.orm as _orm
 import schemas as _schemas
@@ -6,12 +8,8 @@ import services as _services
 import schemas as _schemas
 from typing import List
 
-from fastapi.responses import FileResponse
-from fastapi import Request, Query
 
 app = _fastapi.FastAPI()
-
-
 
 
 @app.get("/api/v1/guardians", response_model=List[_schemas.Guardian])

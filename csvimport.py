@@ -19,9 +19,10 @@ from ens import ENS
 
 infura_project_id = os.environ.get('INFURA_PROJECT_ID')
 
+
 def parse_guardians_csv(db: _orm.Session):
 
-    with open('Guardians.csv', mode='r') as csv_file:
+    with open('assets/guardians.csv', mode='r') as csv_file:
 
         w3 = Web3(HTTPProvider(f"https://mainnet.infura.io/v3/{infura_project_id}"))
         ns = ENS.fromWeb3(w3)
@@ -53,7 +54,11 @@ def parse_guardians_csv(db: _orm.Session):
             else:
                 guardian_ens = ""
 
-            if guardian_image_url:
+            file = os.path.join("assets", "guardian_images", f"{guardian_name}.png")
+            if os.path.exists(file):
+                to_jpgs(file, guardian_address)
+
+            elif guardian_image_url:
                 file = guardian_image_url.split("/")[-1]
                 r = requests.get(guardian_image_url, stream=True)
 
@@ -69,10 +74,10 @@ def parse_guardians_csv(db: _orm.Session):
                     extension = os.path.splitext(file)[1]
 
                     if extension == ".svg":
-                        svg_to_png(file)
-                        to_jpgs(f"{filename}.png", guardian_address)
+                        svg_to_png(os.path.join("images_", file))
+                        to_jpgs(os.path.join("images_", f"{filename}.png"), guardian_address)
                     else:
-                        to_jpgs(file, guardian_address)
+                        to_jpgs(os.path.join("images_", file), guardian_address)
 
                 else:
                     print('Image Couldn\'t be retreived')
@@ -101,14 +106,14 @@ def parse_guardians_csv(db: _orm.Session):
 
 
 def svg_to_png(file):
-    filename = os.path.splitext(file)[0]
-    drawing = svg2rlg(f"images_/{file}")
+    filename = os.path.splitext(file.split("/")[-1])[0]
+    drawing = svg2rlg(file)
     renderPM.drawToFile(drawing, f"images_/{filename}.png", fmt='PNG')
 
 
 def to_jpgs(file, address):
 
-    im = Image.open(os.path.join("images_", file))
+    im = Image.open(file)
 
     rgb_im = im.convert('RGB')
 
@@ -136,5 +141,5 @@ db.query(_models.GuardianModel).delete()
 db.commit()
 
 
-#shutil.rmtree("images")
+#shutil.rmtree("guardian_images")
 parse_guardians_csv(db)
