@@ -7,9 +7,10 @@ import schemas as _schemas
 from typing import List
 
 from fastapi.responses import FileResponse
-from fastapi import Request
+from fastapi import Request, Query
 
 app = _fastapi.FastAPI()
+
 
 @app.get("/api/v1/guardians", response_model=List[_schemas.Guardian])
 async def guardians(
@@ -30,8 +31,16 @@ async def guardian(
         raise _fastapi.HTTPException(status_code=404, detail="guardian not found")
 
 
+class ImageParams:
+    def __init__(
+        self,
+        size: str = Query(..., description="Image size")
+    ):
+        self.size = size
+
+
 @app.get("/api/v1/guardians/{address}/image", response_class=FileResponse)
-async def guardian_image(address, size="1x"):
+async def guardian_image(address, size="1x", params: ImageParams = _fastapi.Depends()):
     return FileResponse(f"images/{address}_{size}.jpg")
 
 
