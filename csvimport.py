@@ -1,7 +1,7 @@
 import datetime
 import fastapi as _fastapi
 import sqlalchemy.orm as _orm
-import db as _database
+import database as _database
 import models as _models
 import schemas as _schemas
 import services

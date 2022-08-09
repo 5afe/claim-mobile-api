@@ -1,12 +1,15 @@
 import os
+import database as _database
 import services as _services
 import models as _models
 from csvimport import parse_guardians_csv
 
-os.remove("db.db")
-_services.create_db()
+if os.path.exists("db.db"):
+    os.remove("db.db")
 
-db = next(_services.get_db())
+_database.create_db()
+
+db = _services.get_db()
 db.query(_models.GuardianModel).delete()
 db.commit()
 

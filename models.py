@@ -1,4 +1,4 @@
-import db as _database
+import database as _database
 import sqlalchemy as _sqlalchemy
 import datetime as _datetime
 

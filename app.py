@@ -27,7 +27,9 @@ async def guardian(
         address,
         db: _orm.Session = _fastapi.Depends(_services.get_db)
 ):
-    result = await _services.get_guardian_by_address(request.url._url, address=address, db=db)
+    url_parts = request.url._url.split("/")
+    url_parts.remove(address)
+    result = await _services.get_guardian_by_address("/".join(url_parts), address=address, db=db)
 
     if not result:
         raise _fastapi.HTTPException(status_code=404, detail="guardian not found")
