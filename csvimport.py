@@ -1,11 +1,7 @@
-import datetime
-import fastapi as _fastapi
 import sqlalchemy.orm as _orm
-import database as _database
 import models as _models
-import schemas as _schemas
-import services
-import services as _services
+import dtos as _dtos
+import datetime
 import os
 import csv
 import requests
@@ -135,6 +131,6 @@ def to_jpgs(file, address):
 
 
 async def create_guardian(guardian: _models.GuardianModel):
-    guardian_schema = _schemas.Guardian.from_orm(guardian)
-    guardian_dict = guardian_schema.dict()
+    guardian_dto = _dtos.Guardian.from_orm(guardian)
+    guardian_dict = guardian_dto.dict()
     del guardian_dict["created_at"]

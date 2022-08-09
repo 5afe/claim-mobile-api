@@ -1,18 +1,16 @@
 import fastapi as _fastapi
 from fastapi.responses import FileResponse
 from fastapi import Request, Query
-import fastapi.security as _security
 import sqlalchemy.orm as _orm
-import schemas as _schemas
 import services as _services
-import schemas as _schemas
+import dtos as _dtos
 from typing import List
 
 
 app = _fastapi.FastAPI()
 
 
-@app.get("/api/v1/guardians", response_model=List[_schemas.Guardian])
+@app.get("/api/v1/guardians", response_model=List[_dtos.Guardian])
 async def guardians(
         request: Request,
         db: _orm.Session = _fastapi.Depends(_services.get_db),
@@ -21,7 +19,7 @@ async def guardians(
     return await _services.get_guardians(request.url._url, db=db)
 
 
-@app.get("/api/v1/guardians/{address}", response_model=_schemas.Guardian)
+@app.get("/api/v1/guardians/{address}", response_model=_dtos.Guardian)
 async def guardian(
         request: Request,
         address,
@@ -58,7 +56,7 @@ async def get_delegate(
     pass
 
 
-@app.get("/api/v1/{address}/allocation", response_model=_schemas.Allocation)
+@app.get("/api/v1/{address}/allocation", response_model=_dtos.Allocation)
 async def allocation(
         address,
         db: _orm.Session = _fastapi.Depends(_services.get_db)

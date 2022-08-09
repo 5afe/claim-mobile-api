@@ -1,6 +1,6 @@
 import models as _models
 import sqlalchemy.orm as _orm
-import schemas as _schemas
+import dtos as _dtos
 import database as _database
 
 
@@ -22,7 +22,7 @@ async def get_guardians(url, db: _orm.Session):
 
 def map_guardian_with_url(url):
     def map_guardian(guardian):
-        dto = _schemas.Guardian.from_orm(guardian)
+        dto = _dtos.Guardian.from_orm(guardian)
         dto.image_url = f"{url}/{guardian.address}/image"
         return dto
     return map_guardian
