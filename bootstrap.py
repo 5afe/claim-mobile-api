@@ -2,7 +2,7 @@ import os
 import database as _database
 import services as _services
 import models as _models
-from csvimport import parse_guardians_csv
+from setup_guardians import parse_guardians_csv
 
 if os.path.exists("db.db"):
     os.remove("db.db")
