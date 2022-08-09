@@ -1,6 +1,5 @@
 import sqlalchemy.orm as _orm
 import models as _models
-import dtos as _dtos
 import datetime
 import os
 import csv
@@ -82,7 +81,7 @@ def parse_guardians_csv(db: _orm.Session):
                 else:
                     print('Image Couldn\'t be retreived')
 
-            guardian_obj = _models.GuardianModel(
+            guardian = _models.GuardianModel(
                 name=guardian_name,
                 address=guardian_address,
                 ens=guardian_ens,
@@ -92,9 +91,9 @@ def parse_guardians_csv(db: _orm.Session):
                 start_date=guardian_start_date,
                 submit_date=guardian_submit_date
             )
-            db.add(guardian_obj)
+            db.add(guardian)
             db.commit()
-            db.refresh(guardian_obj)
+            db.refresh(guardian)
 
             print(f'\t{guardian_name}')
             line_count += 1
@@ -128,9 +127,3 @@ def to_jpgs(file, address):
     # 1x
     rgb_im.thumbnail((128, 128))
     rgb_im.save(os.path.join("images", f"{address}_1x.jpg"))
-
-
-async def create_guardian(guardian: _models.GuardianModel):
-    guardian_dto = _dtos.Guardian.from_orm(guardian)
-    guardian_dict = guardian_dto.dict()
-    del guardian_dict["created_at"]
