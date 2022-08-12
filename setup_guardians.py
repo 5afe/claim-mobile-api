@@ -12,14 +12,14 @@ from web3 import Web3
 from web3.providers import HTTPProvider
 from ens import ENS
 
-infura_project_id = os.environ.get('INFURA_PROJECT_ID')
+INFURA_PROJECT_ID = os.environ.get('INFURA_PROJECT_ID')
 
 
 def parse_guardians_csv(db: _orm.Session):
 
     with open('assets/guardians.csv', mode='r') as csv_file:
 
-        w3 = Web3(HTTPProvider(f"https://mainnet.infura.io/v3/{infura_project_id}"))
+        w3 = Web3(HTTPProvider(f"https://mainnet.infura.io/v3/{INFURA_PROJECT_ID}"))
         ns = ENS.fromWeb3(w3)
 
         csv_reader = csv.DictReader(csv_file)

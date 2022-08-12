@@ -6,10 +6,10 @@ class Guardian(_pydantic.BaseModel):
     address: str
     ens: str
     name: str
-    image_url: str
+    imageUrl: str
     reason: str
     contribution: str
-    start_date: _datetime.datetime
+    startDate: _datetime.datetime
 
     class Config:
         orm_mode = True  # stop lazy loading of the data
