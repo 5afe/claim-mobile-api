@@ -49,6 +49,13 @@ def parse_guardians_csv(db: _orm.Session):
 
             # resolve ens
             if "." in guardian_address:
+                main_part, suffix, _ = guardian_address.partition(".eth")
+                if suffix == ".eth":
+                    guardian_address = list(filter(lambda addr: ".eth" in addr, f"{main_part}{suffix}".split(" ")))[0]
+                else:
+                    main_part, suffix, _ = guardian_address.partition(".xyz")
+                    guardian_address = list(filter(lambda addr: ".xyz" in addr, f"{main_part}{suffix}".split(" ")))[0]
+
                 guardian_address = ns.address(f"{guardian_address}")
             else:
                 guardian_ens = ""
