@@ -85,11 +85,11 @@ def parse_guardians_csv(db: _orm.Session):
                 name=guardian_name,
                 address=guardian_address,
                 ens=guardian_ens,
-                image_url=guardian_image_url,
+                imageUrl=guardian_image_url,
                 reason=guardian_reason,
                 contribution=guardian_contribution,
-                start_date=guardian_start_date,
-                submit_date=guardian_submit_date
+                startDate=guardian_start_date,
+                submitDate=guardian_submit_date
             )
             db.add(guardian)
             db.commit()
