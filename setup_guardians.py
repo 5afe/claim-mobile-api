@@ -29,9 +29,13 @@ def parse_guardians_csv(db: _orm.Session):
             os.makedirs("images")
         if not os.path.exists("images_"):
             os.makedirs("images_")
+
+        print(80 * "-")
+        print("Processing guardians")
+        print(80*"-")
+
         for row in csv_reader:
             if line_count == 0:
-                print(f'Column names are {", ".join(row)}')
                 line_count += 1
 
             guardian_name = row["Full name?"]
@@ -105,7 +109,7 @@ def parse_guardians_csv(db: _orm.Session):
             print(f'\t{guardian_name}')
             line_count += 1
 
-        print(f'Processed {line_count} lines.')
+        print(f'Processed {line_count} guardians.')
 
         # cleanup
         shutil.rmtree("images_")
