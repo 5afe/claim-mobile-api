@@ -1,5 +1,6 @@
 import pydantic as _pydantic
 import datetime as _datetime
+from typing import Optional
 
 
 class Guardian(_pydantic.BaseModel):
@@ -15,10 +16,16 @@ class Guardian(_pydantic.BaseModel):
         orm_mode = True  # stop lazy loading of the data
 
 
-class Allocation(_pydantic.BaseModel):
-    user: str
-    ecosystem: str
-    last_claim: str
+class Vesting(_pydantic.BaseModel):
+    id: str
+    account: str
+    curveType: int
+    durationWeeks: int
+    startDate: _datetime.datetime
+    amount: str
+    proof: list
 
-    class Config:
-        orm_mode = True  # stop lazy loading of the data
+
+class Allocation(_pydantic.BaseModel):
+    userVesting: Optional[Vesting]
+    ecosystemVesting: Optional[Vesting]
