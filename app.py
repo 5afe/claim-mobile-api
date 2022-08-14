@@ -61,7 +61,12 @@ async def allocation(
         address,
         db: _orm.Session = _fastapi.Depends(_services.get_db)
 ):
-    pass
+    result = await _services.get_allocation_by_address(address=address, db=db)
+
+    if not result:
+        raise _fastapi.HTTPException(status_code=404, detail="allocation not found")
+
+    return result
 
 
 @app.get("/api/v1/{address}/check", response_model=bool)
