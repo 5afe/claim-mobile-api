@@ -48,12 +48,12 @@ async def guardian_image(address, params: ImageParams = _fastapi.Depends()):
     return FileResponse(f"images/{address}_{params.size}.jpg")
 
 
-@app.get("/api/v1/{address}/delegate", response_model=str)
-async def get_delegate(
-        address,
-        db: _orm.Session = _fastapi.Depends(_services.get_db)
-):
-    pass
+# @app.get("/api/v1/{address}/delegate", response_model=str)
+# async def get_delegate(
+#         address,
+#         db: _orm.Session = _fastapi.Depends(_services.get_db)
+# ):
+#     pass
 
 
 @app.get("/api/v1/{address}/allocation", response_model=_dtos.Allocation)
@@ -69,9 +69,9 @@ async def allocation(
     return result
 
 
-@app.get("/api/v1/{address}/check", response_model=bool)
-async def claim_check(
-        address,
-        db: _orm.Session = _fastapi.Depends(_services.get_db)
-):
-    pass
+# @app.get("/api/v1/{address}/check", response_model=bool)
+# async def claim_check(
+#         address,
+#         db: _orm.Session = _fastapi.Depends(_services.get_db)
+# ):
+#     pass
