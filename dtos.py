@@ -20,7 +20,7 @@ class Vesting(_pydantic.BaseModel):
     account: str
     curveType: int
     durationWeeks: int
-    startDate: _datetime.datetime
+    startDate: int
     amount: str
     proof: list
 

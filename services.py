@@ -2,6 +2,8 @@ import models as _models
 import sqlalchemy.orm as _orm
 import dtos as _dtos
 import database as _database
+from datetime import datetime
+import time
 import merkle_proof
 
 
@@ -55,7 +57,7 @@ async def get_allocation_by_address(address: str, db: _orm.Session):
                 account=user_vesting.owner,
                 curveType=user_vesting.curveType,
                 durationWeeks=user_vesting.durationWeeks,
-                startDate=user_vesting.startDate,
+                startDate=time.mktime(datetime.timetuple(user_vesting.startDate)),
                 amount=user_vesting.amount,
                 proof=user_vesting_proof
             )
@@ -71,7 +73,7 @@ async def get_allocation_by_address(address: str, db: _orm.Session):
                 account=ecosystem_vesting.owner,
                 curveType=ecosystem_vesting.curveType,
                 durationWeeks=ecosystem_vesting.durationWeeks,
-                startDate=ecosystem_vesting.startDate,
+                startDate=time.mktime(datetime.timetuple(ecosystem_vesting.startDate)),
                 amount=ecosystem_vesting.amount,
                 proof=ecosystem_vesting_proof
             )
