@@ -9,7 +9,7 @@ svglib==1.4.1
 uvicorn==0.12.3
 aiofiles==0.6.0
 python-multipart==0.0.5
-jinja2==2.11.2
+jinja2==2.11.3
 hexbytes==0.2.2
 web3==5.30.0
 eth-abi==2.2.0
