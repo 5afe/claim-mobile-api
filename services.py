@@ -26,7 +26,8 @@ async def get_guardians(url, db: _orm.Session):
 def map_guardian_with_url(url):
     def map_guardian(guardian):
         dto = _dtos.Guardian.from_orm(guardian)
-        dto.imageUrl = f"{url}/{guardian.address}/image"
+        if guardian.imageUrl:
+            dto.imageUrl = f"{url}/{guardian.address}/image"
         return dto
     return map_guardian
 

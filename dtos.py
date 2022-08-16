@@ -7,7 +7,7 @@ class Guardian(_pydantic.BaseModel):
     address: str
     ens: Optional[str]
     name: str
-    imageUrl: str
+    imageUrl: Optional[str]
     reason: str
     contribution: str
 

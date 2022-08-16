@@ -90,6 +90,7 @@ def parse_guardians_csv(db: _orm.Session):
                         to_jpgs(os.path.join("images_", file), guardian_address)
 
                 else:
+                    guardian_image_url = None
                     print('Image Couldn\'t be retreived')
 
             guardian = _models.GuardianModel(
