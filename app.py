@@ -19,7 +19,7 @@ app = _fastapi.FastAPI(
 )
 
 
-@app.get("/api/v1/guardians", response_model=List[_dtos.Guardian],  tags=["Guardians"])
+@app.get("/api/v1/guardians", response_model=List[_dtos.Guardian], response_model_exclude_none=True, tags=["Guardians"])
 async def guardians(
         request: Request,
         db: _orm.Session = _fastapi.Depends(_services.get_db),
@@ -28,7 +28,7 @@ async def guardians(
     return await _services.get_guardians(request.url._url, db=db)
 
 
-@app.get("/api/v1/guardians/{address}", response_model=_dtos.Guardian, tags=["Guardians"])
+@app.get("/api/v1/guardians/{address}", response_model=_dtos.Guardian, response_model_exclude_none=True, tags=["Guardians"])
 async def guardian(
         request: Request,
         address,
@@ -65,7 +65,7 @@ async def guardian_image(address, params: ImageParams = _fastapi.Depends()):
 #     pass
 
 
-@app.get("/api/v1/{address}/allocation", response_model=_dtos.Allocation, tags=["Vestings"])
+@app.get("/api/v1/{address}/allocation", response_model=_dtos.Allocation,  response_model_exclude_none=True, tags=["Vestings"])
 async def allocation(
         address,
         db: _orm.Session = _fastapi.Depends(_services.get_db)
