@@ -62,7 +62,7 @@ def parse_guardians_csv(db: _orm.Session):
 
                 guardian_address = ns.address(f"{guardian_address}")
             else:
-                guardian_ens = ""
+                guardian_ens = None
 
             file = os.path.join("assets", "guardian_images", f"{guardian_name}.png")
             if os.path.exists(file):

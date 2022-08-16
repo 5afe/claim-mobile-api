@@ -5,7 +5,7 @@ from typing import Optional
 
 class Guardian(_pydantic.BaseModel):
     address: str
-    ens: str
+    ens: Optional[str]
     name: str
     imageUrl: str
     reason: str
