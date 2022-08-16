@@ -6,11 +6,20 @@ import services as _services
 import dtos as _dtos
 from typing import List
 
+description = """
+Claim Mobile API for delivering guardian and vesting data. 🚀
+"""
 
-app = _fastapi.FastAPI()
 
 
-@app.get("/api/v1/guardians", response_model=List[_dtos.Guardian])
+app = _fastapi.FastAPI(
+    title="Claim Mobile API",
+    description=description,
+    version="0.0.1"
+)
+
+
+@app.get("/api/v1/guardians", response_model=List[_dtos.Guardian],  tags=["Guardians"])
 async def guardians(
         request: Request,
         db: _orm.Session = _fastapi.Depends(_services.get_db),
@@ -19,7 +28,7 @@ async def guardians(
     return await _services.get_guardians(request.url._url, db=db)
 
 
-@app.get("/api/v1/guardians/{address}", response_model=_dtos.Guardian)
+@app.get("/api/v1/guardians/{address}", response_model=_dtos.Guardian, tags=["Guardians"])
 async def guardian(
         request: Request,
         address,
@@ -43,7 +52,7 @@ class ImageParams:
         self.size = size
 
 
-@app.get("/api/v1/guardians/{address}/image", response_class=FileResponse)
+@app.get("/api/v1/guardians/{address}/image", response_class=FileResponse, tags=["Guardians"])
 async def guardian_image(address, params: ImageParams = _fastapi.Depends()):
     return FileResponse(f"images/{address}_{params.size}.jpg")
 
@@ -56,7 +65,7 @@ async def guardian_image(address, params: ImageParams = _fastapi.Depends()):
 #     pass
 
 
-@app.get("/api/v1/{address}/allocation", response_model=_dtos.Allocation)
+@app.get("/api/v1/{address}/allocation", response_model=_dtos.Allocation, tags=["Vestings"])
 async def allocation(
         address,
         db: _orm.Session = _fastapi.Depends(_services.get_db)
