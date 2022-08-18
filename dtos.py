@@ -6,10 +6,10 @@ from typing import Optional
 class Guardian(_pydantic.BaseModel):
     address: str
     ens: Optional[str]
-    name: str
+    name: Optional[str]
     imageUrl: Optional[str]
-    reason: str
-    contribution: str
+    reason: Optional[str]
+    contribution: Optional[str]
 
     class Config:
         orm_mode = True  # stop lazy loading of the data
@@ -28,3 +28,13 @@ class Vesting(_pydantic.BaseModel):
 class Allocation(_pydantic.BaseModel):
     userVesting: Optional[Vesting]
     ecosystemVesting: Optional[Vesting]
+
+
+class VestingStatus(_pydantic.BaseModel):
+    isRedeemed: bool
+    amountClaimed: str
+
+
+class AllocationStatus(_pydantic.BaseModel):
+    userVesting: Optional[VestingStatus]
+    ecosystemVesting: Optional[VestingStatus]
