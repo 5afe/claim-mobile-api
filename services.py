@@ -5,6 +5,8 @@ import database as _database
 from datetime import datetime
 import time
 import merkle_proof
+import vesting_status
+import delegate_registry
 
 
 def get_db():
@@ -85,3 +87,45 @@ async def get_allocation_by_address(address: str, db: _orm.Session):
         )
 
         return allocationDto
+
+
+async def get_allocation_status_by_address(address: str, db: _orm.Session):
+
+    user_vesting = db.query(_models.VestingModel) \
+        .filter(_models.VestingModel.owner == address, _models.VestingModel.type == "user") \
+        .first()
+
+    ecosystem_vesting = db.query(_models.VestingModel) \
+        .filter(_models.VestingModel.owner == address, _models.VestingModel.type == "ecosystem") \
+        .first()
+
+    if user_vesting or ecosystem_vesting:
+
+        userVestingStatus: _dtos.VestingStatus = None
+        ecosystemVestingStatus: _dtos.VestingStatus = None
+
+        if user_vesting:
+            userVestingStatus = vesting_status.get_user_vesting_status(user_vesting.vestingId)
+
+        if ecosystem_vesting:
+            ecosystemVestingStatus = vesting_status.get_ecosystem_vesting_status(ecosystem_vesting.vestingId)
+
+        allocationStatusDto = _dtos.AllocationStatus(
+            userVesting=userVestingStatus,
+            ecosystemVesting=ecosystemVestingStatus,
+        )
+
+        return allocationStatusDto
+
+
+async def get_delegate_for_address(url: str, address: str, db: _orm.Session):
+
+    delegate_address = delegate_registry.get_delegate(address)
+
+    if delegate_address != "0x0000000000000000000000000000000000000000":
+        guardian = db.query(_models.GuardianModel).filter(_models.GuardianModel.address == delegate_address).first()
+        if guardian:
+            guardian = map_guardian_with_url(url)(guardian)
+        else:
+            guardian = _dtos.Guardian(address=delegate_address)
+        return guardian

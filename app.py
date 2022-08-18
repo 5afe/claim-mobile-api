@@ -6,11 +6,10 @@ import services as _services
 import dtos as _dtos
 from typing import List
 
+
 description = """
 Claim Mobile API for delivering guardian and vesting data. 🚀
 """
-
-
 
 app = _fastapi.FastAPI(
     title="Claim Mobile API",
@@ -28,7 +27,8 @@ async def guardians(
     return await _services.get_guardians(request.url._url, db=db)
 
 
-@app.get("/api/v1/guardians/{address}", response_model=_dtos.Guardian, response_model_exclude_none=True, tags=["Guardians"])
+@app.get("/api/v1/guardians/{address}", response_model=_dtos.Guardian, response_model_exclude_none=True,
+         tags=["Guardians"])
 async def guardian(
         request: Request,
         address,
@@ -46,8 +46,8 @@ async def guardian(
 
 class ImageParams:
     def __init__(
-        self,
-        size: str = Query("1x", description="Image size [ 1x, 2x, 3x ]")
+            self,
+            size: str = Query("1x", description="Image size [ 1x, 2x, 3x ]")
     ):
         self.size = size
 
@@ -57,15 +57,27 @@ async def guardian_image(address, params: ImageParams = _fastapi.Depends()):
     return FileResponse(f"images/{address}_{params.size}.jpg")
 
 
-# @app.get("/api/v1/{address}/delegate", response_model=str)
-# async def get_delegate(
-#         address,
-#         db: _orm.Session = _fastapi.Depends(_services.get_db)
-# ):
-#     pass
+@app.get("/api/v1/{address}/delegate", response_model=_dtos.Guardian, response_model_exclude_none=True,
+         tags=["Delegate"])
+async def get_delegate(
+        request: Request,
+        address,
+        db: _orm.Session = _fastapi.Depends(_services.get_db)
+):
+    url_parts = request.url._url.split("/")
+    url_parts.remove(address)
+    url_parts.remove("delegate")
+
+    result = await _services.get_delegate_for_address("/".join(url_parts), address=address, db=db)
+
+    if not result:
+        raise _fastapi.HTTPException(status_code=404, detail="delegate not set")
+
+    return result
 
 
-@app.get("/api/v1/{address}/allocation", response_model=_dtos.Allocation,  response_model_exclude_none=True, tags=["Vestings"])
+@app.get("/api/v1/vestings/{address}/allocation", response_model=_dtos.Allocation, response_model_exclude_none=True,
+         tags=["Vestings"])
 async def allocation(
         address,
         db: _orm.Session = _fastapi.Depends(_services.get_db)
@@ -78,9 +90,14 @@ async def allocation(
     return result
 
 
-# @app.get("/api/v1/{address}/check", response_model=bool)
-# async def claim_check(
-#         address,
-#         db: _orm.Session = _fastapi.Depends(_services.get_db)
-# ):
-#     pass
+@app.get("/api/v1/vestings/{address}/status", response_model=_dtos.AllocationStatus, response_model_exclude_none=True, tags=["Vestings"])
+async def claim_check(
+        address,
+        db: _orm.Session = _fastapi.Depends(_services.get_db)
+):
+    result = await _services.get_allocation_status_by_address(address=address, db=db)
+
+    if not result:
+        raise _fastapi.HTTPException(status_code=404, detail="allocation not found")
+
+    return result
