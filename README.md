@@ -31,3 +31,7 @@ By default swagger UI is accessible at
 ```
 http://127.0.0.1:8000/docs
 ```
+Redoc UI is accessible at
+```
+http://127.0.0.1:8000/redoc
+```

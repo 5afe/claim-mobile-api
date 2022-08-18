@@ -1,11 +1,10 @@
 import fastapi as _fastapi
 from fastapi.responses import FileResponse
-from fastapi import Request, Query
+from fastapi import Request, Query, Path
 import sqlalchemy.orm as _orm
 import services as _services
 import dtos as _dtos
 from typing import List
-
 
 description = """
 Claim Mobile API for delivering guardian and vesting data. 🚀
@@ -34,7 +33,7 @@ async def guardians(
          description="""Get guardian data using guardian address.""")
 async def guardian(
         request: Request,
-        address,
+        address: str = Path(None, description="Address of a guardian without a network prefix."),
         db: _orm.Session = _fastapi.Depends(_services.get_db)
 ):
     url_parts = request.url._url.split("/")
@@ -67,7 +66,7 @@ async def guardian_image(address, params: ImageParams = _fastapi.Depends()):
          description="""Get delegate for an address. If matching guardian is available, guardian data will be returned as well.""")
 async def get_delegate(
         request: Request,
-        address,
+        address: str = Path(None, description="Address without a network prefix."),
         db: _orm.Session = _fastapi.Depends(_services.get_db)
 ):
     url_parts = request.url._url.split("/")
@@ -86,7 +85,7 @@ async def get_delegate(
          tags=["Vestings"],
          description="""Get vesting data. Both user and ecosystem vesting data are returned for an address if available.""")
 async def allocation(
-        address,
+        address: str = Path(None, description="Address without a network prefix."),
         db: _orm.Session = _fastapi.Depends(_services.get_db)
 ):
     result = await _services.get_allocation_by_address(address=address, db=db)
@@ -101,7 +100,7 @@ async def allocation(
          tags=["Vestings"],
          description="""Get current vesting status for an address from user and ecosystem airdrop contracts.""")
 async def claim_check(
-        address,
+        address: str = Path(None, description="Address without a network prefix."),
         db: _orm.Session = _fastapi.Depends(_services.get_db)
 ):
     result = await _services.get_allocation_status_by_address(address=address, db=db)
