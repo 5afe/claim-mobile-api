@@ -18,7 +18,9 @@ app = _fastapi.FastAPI(
 )
 
 
-@app.get("/api/v1/guardians", response_model=List[_dtos.Guardian], response_model_exclude_none=True, tags=["Guardians"])
+@app.get("/api/v1/guardians", response_model=List[_dtos.Guardian], response_model_exclude_none=True,
+         tags=["Guardians"],
+         description="""Get list of guardians with resolved addresses and square images.""")
 async def guardians(
         request: Request,
         db: _orm.Session = _fastapi.Depends(_services.get_db),
@@ -28,7 +30,8 @@ async def guardians(
 
 
 @app.get("/api/v1/guardians/{address}", response_model=_dtos.Guardian, response_model_exclude_none=True,
-         tags=["Guardians"])
+         tags=["Guardians"],
+         description="""Get guardian data using guardian address.""")
 async def guardian(
         request: Request,
         address,
@@ -52,13 +55,16 @@ class ImageParams:
         self.size = size
 
 
-@app.get("/api/v1/guardians/{address}/image", response_class=FileResponse, tags=["Guardians"])
+@app.get("/api/v1/guardians/{address}/image", response_class=FileResponse,
+         tags=["Guardians"],
+         description="""Get image for a guardian. If available, image is a JPG and could be retrieved in three different sizes: 128x128, 256x26, or 384x384.""")
 async def guardian_image(address, params: ImageParams = _fastapi.Depends()):
     return FileResponse(f"images/{address}_{params.size}.jpg")
 
 
 @app.get("/api/v1/{address}/delegate", response_model=_dtos.Guardian, response_model_exclude_none=True,
-         tags=["Delegate"])
+         tags=["Delegate"],
+         description="""Get delegate for an address. If matching guardian is available, guardian data will be returned as well.""")
 async def get_delegate(
         request: Request,
         address,
@@ -77,7 +83,8 @@ async def get_delegate(
 
 
 @app.get("/api/v1/vestings/{address}/allocation", response_model=_dtos.Allocation, response_model_exclude_none=True,
-         tags=["Vestings"])
+         tags=["Vestings"],
+         description="""Get vesting data. Both user and ecosystem vesting data are returned for an address if available.""")
 async def allocation(
         address,
         db: _orm.Session = _fastapi.Depends(_services.get_db)
@@ -90,7 +97,9 @@ async def allocation(
     return result
 
 
-@app.get("/api/v1/vestings/{address}/status", response_model=_dtos.AllocationStatus, response_model_exclude_none=True, tags=["Vestings"])
+@app.get("/api/v1/vestings/{address}/status", response_model=_dtos.AllocationStatus, response_model_exclude_none=True,
+         tags=["Vestings"],
+         description="""Get current vesting status for an address from user and ecosystem airdrop contracts.""")
 async def claim_check(
         address,
         db: _orm.Session = _fastapi.Depends(_services.get_db)
