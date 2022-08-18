@@ -25,7 +25,3 @@ def get_delegate(delegator_address):
         print(delegate)
 
         return delegate
-
-
-get_delegate("0x1230B3d59858296A31053C1b8562Ecf89A2f888b")
-
