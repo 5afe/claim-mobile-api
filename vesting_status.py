@@ -24,10 +24,12 @@ def get_vesting_status(airdrop_address, vesting_id):
         # https://github.com/safe-global/safe-token/blob/main/contracts/VestingPool.sol
         vesting_status = contract.functions.vestings(vesting_id).call()
         is_redeemed = False if (HexBytes(vesting_status[0]) == ZERO_ADDRESS) else True
+        is_paused = vesting_status[7] != 0
         amount_claimed = vesting_status[6]
 
         vesting_status = VestingStatus(
             isRedeemed=is_redeemed,
+            isPaused=is_paused,
             amountClaimed=amount_claimed
         )
 

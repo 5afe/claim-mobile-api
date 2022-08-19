@@ -32,6 +32,7 @@ class Allocation(_pydantic.BaseModel):
 
 class VestingStatus(_pydantic.BaseModel):
     isRedeemed: bool
+    isPaused: bool
     amountClaimed: str
 
 
